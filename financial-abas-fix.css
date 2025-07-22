@@ -1,0 +1,939 @@
+/* ==================== CORREÇÃO DAS ABAS FINANCEIRAS ==================== */
+
+/* Estilos para cards de drill-down de alunos */
+.student-drill-card {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.student-drill-card:hover {
+    border-color: #4169E1;
+    box-shadow: 0 4px 8px rgba(65, 105, 225, 0.2);
+    transform: translateY(-2px);
+}
+
+.student-drill-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4169E1, #6B9BD2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.student-drill-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.student-drill-info h5 {
+    margin: 0 0 5px 0;
+    color: #333;
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.student-drill-info p {
+    margin: 0 0 8px 0;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.student-drill-info .level-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75em;
+    font-weight: 600;
+    margin-right: 8px;
+}
+
+.level-badge.level-a1 { background: #e8f5e8; color: #2e7d32; }
+.level-badge.level-a2 { background: #e3f2fd; color: #1976d2; }
+.level-badge.level-b1 { background: #fff3e0; color: #f57c00; }
+.level-badge.level-b2 { background: #fce4ec; color: #c2185b; }
+.level-badge.level-c1 { background: #f3e5f5; color: #7b1fa2; }
+.level-badge.level-c2 { background: #e8eaf6; color: #3f51b5; }
+
+.student-drill-info .status-active {
+    color: #28a745;
+    font-size: 0.8em;
+    font-weight: 500;
+}
+
+.student-drill-info .status-inactive {
+    color: #dc3545;
+    font-size: 0.8em;
+    font-weight: 500;
+}
+
+.student-drill-action {
+    flex-shrink: 0;
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 0.85em;
+    border-radius: 6px;
+}
+
+/* Estilos para mensagens de estado */
+.no-data {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    font-style: italic;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px dashed #dee2e6;
+}
+
+.search-info {
+    margin: 10px 0;
+    padding: 8px 12px;
+    background: #e9ecef;
+    border-radius: 6px;
+    font-size: 0.9em;
+    color: #495057;
+    text-align: center;
+}
+
+/* Estilos para filtro mensal */
+.monthly-filter-initial {
+    text-align: center;
+    padding: 60px 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    border: 1px solid #dee2e6;
+}
+
+.monthly-filter-initial .filter-icon {
+    font-size: 3em;
+    color: #4169E1;
+    margin-bottom: 20px;
+}
+
+.monthly-filter-initial h4 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.monthly-filter-initial p {
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.monthly-filter-initial small {
+    color: #999;
+}
+
+/* Estilos para resultados do filtro mensal */
+.monthly-results-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, #4169E1, #6B9BD2);
+    color: white;
+    border-radius: 12px;
+}
+
+.monthly-results-header h4 {
+    margin: 0 0 5px 0;
+    font-size: 1.4em;
+}
+
+.monthly-results-header p {
+    margin: 0;
+    opacity: 0.9;
+}
+
+/* Cards de estatísticas mensais */
+.monthly-stats-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.monthly-stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid;
+}
+
+.monthly-stat-card.pagas {
+    border-left-color: #28a745;
+}
+
+.monthly-stat-card.pendentes {
+    border-left-color: #ffc107;
+}
+
+.monthly-stat-card.vencidas {
+    border-left-color: #dc3545;
+}
+
+.monthly-stat-card .stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    color: white;
+}
+
+.monthly-stat-card.pagas .stat-icon {
+    background: #28a745;
+}
+
+.monthly-stat-card.pendentes .stat-icon {
+    background: #ffc107;
+}
+
+.monthly-stat-card.vencidas .stat-icon {
+    background: #dc3545;
+}
+
+.monthly-stat-card .stat-info {
+    flex: 1;
+}
+
+.monthly-stat-card .stat-number {
+    display: block;
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #333;
+    line-height: 1;
+}
+
+.monthly-stat-card .stat-label {
+    display: block;
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 3px;
+}
+
+.monthly-stat-card .stat-value {
+    display: block;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #4169E1;
+}
+
+/* Lista de mensalidades mensais */
+.monthly-mensalidades-list {
+    display: grid;
+    gap: 20px;
+}
+
+.mensalidade-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    border-left: 4px solid;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.mensalidade-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.mensalidade-card.status-paga {
+    border-left-color: #28a745;
+    background: linear-gradient(to right, #f8fff8, white);
+}
+
+.mensalidade-card.status-pendente {
+    border-left-color: #ffc107;
+    background: linear-gradient(to right, #fffdf0, white);
+}
+
+.mensalidade-card.status-vencida {
+    border-left-color: #dc3545;
+    background: linear-gradient(to right, #fff5f5, white);
+}
+
+.mensalidade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.mensalidade-header .student-info h5 {
+    margin: 0 0 3px 0;
+    color: #333;
+    font-size: 1.1em;
+}
+
+.mensalidade-header .student-info small {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.mensalidade-value .value {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #4169E1;
+}
+
+.mensalidade-details {
+    margin-bottom: 15px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.detail-item i {
+    width: 16px;
+    color: #4169E1;
+}
+
+.overdue-badge {
+    background: #dc3545;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.75em;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+.mensalidade-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.mensalidade-actions .btn {
+    padding: 8px 16px;
+    font-size: 0.85em;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mensalidade-actions .btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.mensalidade-actions .btn-success:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+.mensalidade-actions .btn-warning {
+    background: #ffc107;
+    color: #212529;
+}
+
+.mensalidade-actions .btn-warning:hover {
+    background: #e0a800;
+    transform: translateY(-1px);
+}
+
+/* Mensagem de nenhum resultado no filtro mensal */
+.monthly-no-results {
+    text-align: center;
+    padding: 60px 20px;
+    background: #f8f9fa;
+    border-radius: 15px;
+    border: 1px dashed #dee2e6;
+}
+
+.monthly-no-results .no-results-icon {
+    font-size: 3em;
+    color: #6c757d;
+    margin-bottom: 20px;
+}
+
+.monthly-no-results h4 {
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+.monthly-no-results p {
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.monthly-no-results small {
+    color: #999;
+}
+
+/* Destacar termos de busca */
+mark {
+    background: #fff3cd;
+    color: #856404;
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .student-drill-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .student-drill-info {
+        text-align: center;
+    }
+    
+    .monthly-stats-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .mensalidade-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .mensalidade-actions {
+        justify-content: center;
+    }
+}
+
+/* Garantir que elementos das abas sejam visíveis */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block !important;
+    animation: fadeInTab 0.3s ease-out;
+}
+
+@keyframes fadeInTab {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Melhorias para o seletor de mês */
+.month-selector-centered {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.month-filter-label {
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.month-filter-input {
+    padding: 10px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1em;
+    min-width: 160px;
+    transition: border-color 0.3s ease;
+}
+
+.month-filter-input:focus {
+    outline: none;
+    border-color: #4169E1;
+    box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.1);
+}
+
+/* ==================== ESTILOS PARA VISUALIZAÇÃO DETALHADA DO ALUNO ==================== */
+
+/* Detalhes financeiros do aluno */
+.student-financial-details {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    margin-top: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    animation: fadeInDetail 0.3s ease-out;
+}
+
+@keyframes fadeInDetail {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.student-financial-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.student-financial-header h3 {
+    margin: 0;
+    color: #333;
+    flex-grow: 1;
+    font-size: 1.5em;
+}
+
+.student-financial-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+@media (max-width: 768px) {
+    .student-financial-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
+.student-contracts,
+.student-mensalidades {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.student-contracts h4,
+.student-mensalidades h4 {
+    margin: 0 0 15px 0;
+    color: #495057;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.2em;
+}
+
+/* Cards mini de contratos */
+.contract-mini-card {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+    border-left: 4px solid #4169E1;
+}
+
+.contract-mini-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.contract-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.contract-info strong {
+    color: #495057;
+    font-size: 0.95em;
+    font-weight: 600;
+}
+
+.contract-value {
+    color: #28a745;
+    font-weight: 600;
+    font-size: 1.1em;
+}
+
+.contract-period {
+    font-size: 0.85em;
+    color: #6c757d;
+    margin-bottom: 8px;
+}
+
+.contract-status {
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.contract-status.status-ativo {
+    background: #d4edda;
+    color: #155724;
+}
+
+.contract-status.status-inativo {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.contract-status.status-vencido {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.contract-details {
+    display: flex;
+    gap: 15px;
+    margin-top: 8px;
+}
+
+.contract-details small {
+    color: #6c757d;
+    font-size: 0.8em;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Resumo das mensalidades do aluno */
+.mensalidades-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.summary-card {
+    background: white;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    border-left: 3px solid;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.summary-card.paga {
+    border-left-color: #28a745;
+}
+
+.summary-card.pendente {
+    border-left-color: #ffc107;
+}
+
+.summary-card.vencida {
+    border-left-color: #dc3545;
+}
+
+.summary-icon {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+.summary-card.paga .summary-icon {
+    color: #28a745;
+}
+
+.summary-card.pendente .summary-icon {
+    color: #ffc107;
+}
+
+.summary-card.vencida .summary-icon {
+    color: #dc3545;
+}
+
+.summary-count {
+    display: block;
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #333;
+    line-height: 1;
+}
+
+.summary-label {
+    display: block;
+    font-size: 0.8em;
+    color: #666;
+    margin: 2px 0;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.summary-value {
+    display: block;
+    font-size: 0.9em;
+    font-weight: 600;
+    color: #4169E1;
+}
+
+/* Abas de mensalidades do aluno */
+.mensalidades-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #dee2e6;
+    overflow-x: auto;
+}
+
+.mensalidade-tab {
+    padding: 8px 12px;
+    border: none;
+    background: transparent;
+    color: #6c757d;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+}
+
+.mensalidade-tab:hover {
+    color: #495057;
+    background: #f8f9fa;
+}
+
+.mensalidade-tab.active {
+    color: #4169E1;
+    border-bottom-color: #4169E1;
+    background: #f8f9fa;
+}
+
+/* Grid de mensalidades do aluno */
+.mensalidades-grid {
+    display: grid;
+    gap: 12px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.mensalidade-card-simple {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 12px;
+    transition: all 0.3s ease;
+    border-left: 3px solid;
+}
+
+.mensalidade-card-simple:hover {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.mensalidade-card-simple.paga {
+    border-left-color: #28a745;
+    background: linear-gradient(to right, #f8fff8, white);
+}
+
+.mensalidade-card-simple.pendente {
+    border-left-color: #ffc107;
+    background: linear-gradient(to right, #fffdf0, white);
+}
+
+.mensalidade-card-simple.vencida {
+    border-left-color: #dc3545;
+    background: linear-gradient(to right, #fff5f5, white);
+}
+
+.mensalidade-header-simple {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.mensalidade-referencia strong {
+    color: #333;
+    font-size: 0.9em;
+}
+
+.mensalidade-status {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8em;
+    font-weight: 500;
+}
+
+.mensalidade-status.paga {
+    color: #28a745;
+}
+
+.mensalidade-status.pendente {
+    color: #ffc107;
+}
+
+.mensalidade-status.vencida {
+    color: #dc3545;
+}
+
+.mensalidade-details-simple {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 8px;
+}
+
+.mensalidade-valor .valor {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #4169E1;
+}
+
+.mensalidade-vencimento {
+    text-align: right;
+}
+
+.mensalidade-vencimento small {
+    display: block;
+    color: #6c757d;
+    font-size: 0.75em;
+    line-height: 1.3;
+}
+
+.vencimento-info.paga {
+    color: #28a745;
+}
+
+.vencimento-info.vencida {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+.mensalidade-actions-simple {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-xs {
+    padding: 4px 8px;
+    font-size: 0.75em;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-xs:hover {
+    transform: scale(1.05);
+}
+
+/* Mensagens de estado para aluno específico */
+.no-mensalidades {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    background: white;
+    border-radius: 8px;
+    border: 1px dashed #dee2e6;
+}
+
+.no-mensalidades i {
+    font-size: 2.5em;
+    color: #6c757d;
+    margin-bottom: 15px;
+}
+
+.no-mensalidades h4 {
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.no-mensalidades p {
+    margin-bottom: 5px;
+}
+
+.no-mensalidades small {
+    color: #999;
+    font-style: italic;
+}
+
+.no-mensalidades-filtered {
+    text-align: center;
+    padding: 30px 20px;
+    color: #6c757d;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.no-mensalidades-filtered i {
+    font-size: 2em;
+    margin-bottom: 10px;
+    color: #6c757d;
+}
+
+/* Mensalidade com erro */
+.mensalidade-card-simple.error {
+    border-left-color: #dc3545;
+    background: #fff5f5;
+}
+
+.mensalidade-error {
+    text-align: center;
+    color: #dc3545;
+    font-size: 0.9em;
+}
+
+.mensalidade-error i {
+    margin-right: 5px;
+}
+
+.mensalidade-error small {
+    display: block;
+    margin-top: 3px;
+    font-size: 0.75em;
+    color: #6c757d;
+}
+
+/* Scrollbar personalizada para listas */
+.mensalidades-grid::-webkit-scrollbar {
+    width: 6px;
+}
+
+.mensalidades-grid::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.mensalidades-grid::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.mensalidades-grid::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+} 

@@ -1,0 +1,208 @@
+/* ==================== CORREÇÃO DO SISTEMA DE BUSCA DE CONTRATOS ==================== */
+
+/* ==================== CORREÇÃO MODAL DE CONTRATO - Z-INDEX MÁXIMO ==================== */
+/* Garantir que o modal de contrato apareça sempre acima de todos os elementos */
+#addContratoModal {
+    z-index: 2147483647 !important; /* Valor máximo de z-index */
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-color: rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(5px) !important;
+}
+
+#addContratoModal .modal-content {
+    position: relative !important;
+    z-index: 2147483647 !important;
+    background: white !important;
+    margin: 3% auto !important;
+    padding: 0 !important;
+    border-radius: 15px !important;
+    width: 90% !important;
+    max-width: 700px !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4) !important;
+}
+
+#addContratoModal .modal-header {
+    z-index: 2147483647 !important;
+    position: relative !important;
+}
+
+#addContratoModal .modal-body {
+    z-index: 2147483647 !important;
+    position: relative !important;
+}
+
+#addContratoModal .modal-footer {
+    z-index: 2147483647 !important;
+    position: relative !important;
+}
+
+/* Garantir que todos os elementos do formulário estejam acima de tudo */
+#addContratoModal select,
+#addContratoModal input,
+#addContratoModal textarea,
+#addContratoModal button {
+    z-index: 2147483647 !important;
+    position: relative !important;
+}
+
+/* ==================== SISTEMA DE BUSCA DE CONTRATOS ==================== */
+
+/* Força reset da área de busca de contratos */
+.contracts-search-header {
+    background: #f8f9fa !important;
+    padding: 20px !important;
+    border-radius: 10px !important;
+    margin-bottom: 25px !important;
+    border: 1px solid #e9ecef !important;
+    width: 100% !important;
+    order: 1 !important;
+    flex-shrink: 0 !important;
+    display: block !important;
+    box-sizing: border-box !important;
+}
+
+/* Linha principal de busca */
+.search-main-row {
+    display: flex !important;
+    gap: 15px !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    margin-bottom: 15px !important;
+    justify-content: flex-start !important;
+}
+
+/* Grupo do input de busca */
+.contracts-search-header .search-input-group {
+    position: relative !important;
+    flex: 1 !important;
+    min-width: 300px !important;
+    max-width: 500px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Ícone da lupa */
+.contracts-search-header .search-input-group i.fa-search {
+    position: absolute !important;
+    left: 15px !important;
+    color: #6c757d !important;
+    z-index: 3 !important;
+    font-size: 0.9em !important;
+    pointer-events: none !important;
+}
+
+/* Campo de busca */
+.contracts-search-header .search-input {
+    width: 100% !important;
+    padding: 12px 45px 12px 45px !important;
+    border: 2px solid #e9ecef !important;
+    border-radius: 25px !important;
+    font-size: 1em !important;
+    transition: all 0.3s ease !important;
+    background: white !important;
+    box-sizing: border-box !important;
+}
+
+.contracts-search-header .search-input:focus {
+    outline: none !important;
+    border-color: #4285f4 !important;
+    box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1) !important;
+}
+
+/* Botão de limpar busca */
+.contracts-search-header .clear-search {
+    position: absolute !important;
+    right: 12px !important;
+    background: none !important;
+    border: none !important;
+    color: #6c757d !important;
+    cursor: pointer !important;
+    padding: 8px !important;
+    border-radius: 50% !important;
+    transition: all 0.2s ease !important;
+    z-index: 4 !important;
+    width: 30px !important;
+    height: 30px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.contracts-search-header .clear-search:hover {
+    background: #e9ecef !important;
+    color: #dc3545 !important;
+}
+
+/* Filtros rápidos */
+.contracts-search-header .quick-filters {
+    display: flex !important;
+    gap: 10px !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
+}
+
+.contracts-search-header .filter-select {
+    padding: 8px 12px !important;
+    border: 2px solid #dee2e6 !important;
+    border-radius: 6px !important;
+    background: white !important;
+    font-size: 14px !important;
+    color: #495057 !important;
+    transition: all 0.3s ease !important;
+    min-width: 140px !important;
+    cursor: pointer !important;
+}
+
+.contracts-search-header .filter-select:focus {
+    outline: none !important;
+    border-color: #4169E1 !important;
+    box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.1) !important;
+}
+
+/* Informações dos resultados */
+.contracts-search-header .search-results-info {
+    text-align: center !important;
+    margin-top: 10px !important;
+    color: #495057 !important;
+    font-size: 0.9em !important;
+}
+
+.contracts-search-header .search-info {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    color: #495057 !important;
+}
+
+/* Mobile responsivo */
+@media (max-width: 768px) {
+    .search-main-row {
+        flex-direction: column !important;
+        gap: 15px !important;
+        align-items: stretch !important;
+    }
+    
+    .contracts-search-header .search-input-group {
+        min-width: 100% !important;
+        max-width: none !important;
+    }
+    
+    .contracts-search-header .quick-filters {
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+    }
+    
+    .contracts-search-header .filter-select {
+        min-width: 130px !important;
+        flex: 1 !important;
+    }
+}
+
+/* ==================== FIM DA CORREÇÃO DO SISTEMA DE BUSCA ==================== */ 
