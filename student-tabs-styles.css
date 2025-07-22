@@ -1,0 +1,544 @@
+/* ESTILOS PARA AS ABAS DO ALUNO */
+
+/* ===== RANKINGS ===== */
+.ranking-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.ranking-item:last-child {
+    border-bottom: none;
+}
+
+.ranking-item.highlight {
+    background-color: #fff3cd;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+    border: 2px solid #ffc107;
+}
+
+.ranking-item .rank {
+    font-weight: bold;
+    font-size: 16px;
+    width: 40px;
+    color: #4169E1;
+}
+
+.ranking-item .name {
+    flex: 1;
+    font-weight: 600;
+    color: #333;
+}
+
+.ranking-item .points {
+    font-weight: 600;
+    color: #666;
+    margin-right: 10px;
+}
+
+.ranking-item .badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge.you {
+    background-color: #4169E1;
+    color: white;
+}
+
+.badge.gold {
+    background-color: #ffc107;
+    color: #333;
+}
+
+.badge.silver {
+    background-color: #6c757d;
+    color: white;
+}
+
+.badge.bronze {
+    background-color: #fd7e14;
+    color: white;
+}
+
+.evolution-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.evolution-item:last-child {
+    border-bottom: none;
+}
+
+.evolution-item.current {
+    background-color: #e7f3ff;
+    border-radius: 6px;
+    padding: 10px;
+    border: 1px solid #4169E1;
+}
+
+.evolution-item .month {
+    width: 80px;
+    font-weight: 600;
+}
+
+.evolution-item .position {
+    flex: 1;
+    color: #666;
+}
+
+.evolution-item .change {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.change.up {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.change.down {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* ===== PRESENÇAS ===== */
+.attendance-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.attendance-item:last-child {
+    border-bottom: none;
+}
+
+.attendance-item .date {
+    width: 80px;
+    font-weight: 600;
+    color: #666;
+    font-size: 14px;
+}
+
+.attendance-item .class-info {
+    flex: 1;
+    margin-left: 15px;
+}
+
+.attendance-item .class-info h4 {
+    margin: 0 0 4px 0;
+    font-size: 15px;
+    color: #333;
+}
+
+.attendance-item .class-info p {
+    margin: 0;
+    font-size: 13px;
+    color: #666;
+}
+
+.attendance-item .status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status.present {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status.absent {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.frequency-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.frequency-item:last-child {
+    border-bottom: none;
+}
+
+.frequency-item.current {
+    background-color: #e7f3ff;
+    border-radius: 6px;
+    padding: 12px;
+    border: 1px solid #4169E1;
+}
+
+.frequency-item .month {
+    width: 80px;
+    font-weight: 600;
+}
+
+.frequency-bar {
+    flex: 1;
+    height: 8px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    margin: 0 15px;
+    position: relative;
+}
+
+.frequency-bar .fill {
+    height: 100%;
+    background-color: #28a745;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.frequency-item .percentage {
+    font-weight: 600;
+    color: #28a745;
+    width: 50px;
+    text-align: right;
+}
+
+/* ===== TAREFAS ===== */
+.task-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.task-item:last-child {
+    border-bottom: none;
+}
+
+.task-item.urgent {
+    background-color: #fff5f5;
+    border-radius: 8px;
+    padding: 15px;
+    border-left: 4px solid #dc3545;
+    margin-bottom: 8px;
+}
+
+.task-item.completed {
+    opacity: 0.7;
+}
+
+.task-item .task-info {
+    flex: 1;
+}
+
+.task-item .task-info h4 {
+    margin: 0 0 6px 0;
+    font-size: 15px;
+    color: #333;
+}
+
+.task-item .task-info p {
+    margin: 0 0 4px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.task-item .task-info small {
+    font-size: 12px;
+    color: #999;
+}
+
+.task-item .task-actions,
+.task-item .task-score {
+    margin-left: 15px;
+}
+
+.task-score .score {
+    background-color: #28a745;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* ===== FINANCEIRO ===== */
+.payment-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.payment-item:last-child {
+    border-bottom: none;
+}
+
+.payment-item.current {
+    background-color: #fff3cd;
+    border-radius: 8px;
+    padding: 15px;
+    border-left: 4px solid #ffc107;
+    margin-bottom: 8px;
+}
+
+.payment-item .payment-info {
+    flex: 1;
+}
+
+.payment-item .payment-info h4 {
+    margin: 0 0 4px 0;
+    font-size: 15px;
+    color: #333;
+}
+
+.payment-item .payment-info p {
+    margin: 0;
+    font-size: 13px;
+    color: #666;
+}
+
+.payment-item .payment-amount {
+    font-weight: 600;
+    font-size: 16px;
+    color: #333;
+    margin: 0 15px;
+}
+
+.payment-item .payment-status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0 15px;
+}
+
+.payment-status.pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.payment-status.paid {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.payment-summary {
+    margin-bottom: 20px;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-item .label {
+    color: #666;
+}
+
+.summary-item .value {
+    font-weight: 600;
+    color: #333;
+}
+
+.payment-methods {
+    margin-top: 20px;
+}
+
+.payment-methods h4 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.method-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    color: #666;
+}
+
+.method-item i {
+    margin-right: 10px;
+    color: #4169E1;
+    width: 20px;
+}
+
+/* ===== PERFIL ===== */
+.profile-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #4169E1;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: bold;
+    margin-right: 20px;
+}
+
+.profile-info h3 {
+    margin: 0 0 8px 0;
+    color: #333;
+}
+
+.profile-info .email {
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.profile-info .level,
+.profile-info .points {
+    margin: 2px 0;
+    color: #666;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-item label {
+    font-size: 12px;
+    color: #999;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.info-item span {
+    color: #333;
+    font-weight: 500;
+}
+
+.settings-section {
+    margin-bottom: 30px;
+}
+
+.settings-section h4 {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 16px;
+}
+
+.setting-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.setting-item:last-child {
+    border-bottom: none;
+}
+
+/* Switch Toggle */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #4169E1;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.profile-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 10px;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 768px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .profile-section {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .profile-avatar {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+    
+    .task-item,
+    .payment-item,
+    .ranking-item,
+    .attendance-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .task-actions,
+    .payment-actions {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+}

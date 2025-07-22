@@ -1,0 +1,1689 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeakEnglish - Sistema de Gestão de Alunos</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="fixes.css">
+    <link rel="stylesheet" href="reposicao-fixes.css">
+    <link rel="stylesheet" href="dashboard-cards-fix.css">
+    <link rel="stylesheet" href="cefr-levels.css">
+    <link rel="stylesheet" href="financial-styles.css">
+    <link rel="stylesheet" href="reports-styles.css">
+    <link rel="stylesheet" href="reports-search-styles.css">
+    <link rel="stylesheet" href="contracts-search-fix.css">
+    <link rel="stylesheet" href="modal-positioning-fix.css">
+    <link rel="stylesheet" href="financial-abas-fix.css">
+    <link rel="stylesheet" href="student-tabs-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="financial-stats.js"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="teste-supabase.js"></script>
+    <script src="auto-setup-supabase.js"></script>
+    <link rel="stylesheet" href="student-styles.css">
+    <style>
+        /* Correção imediata dos cards do dashboard */
+        #dashboard .stats-grid {
+            display: grid !important;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+            gap: 20px !important;
+            margin-bottom: 30px !important;
+        }
+
+        #dashboard .stats-grid .stat-card {
+            background: white !important;
+            border-radius: 15px !important;
+            padding: 25px !important;
+            text-align: center !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+            transition: all 0.3s ease !important;
+            position: relative !important;
+            overflow: hidden !important;
+            min-height: 140px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+        }
+
+        /* Card Total de Alunos - Azul */
+        #dashboard .stats-grid .stat-card:nth-child(1) {
+            border-left: 5px solid #4169E1 !important;
+        }
+        #dashboard .stats-grid .stat-card:nth-child(1)::before {
+            content: '' !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            height: 3px !important;
+            background: linear-gradient(90deg, #4169E1, #667eea) !important;
+        }
+        #dashboard .stats-grid .stat-card:nth-child(1) h3 {
+            color: #4169E1 !important;
+        }
+
+        /* Card Presenças Hoje - Verde */
+        #dashboard .stats-grid .stat-card:nth-child(2) {
+            border-left: 5px solid #28a745 !important;
+        }
+        #dashboard .stats-grid .stat-card:nth-child(2)::before {
+            content: '' !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            height: 3px !important;
+            background: linear-gradient(90deg, #28a745, #20c997) !important;
+        }
+        #dashboard .stats-grid .stat-card:nth-child(2) h3 {
+            color: #28a745 !important;
+        }
+
+        /* Card Tarefas Ativas - Laranja */
+        #dashboard .stats-grid .stat-card:nth-child(3) {
+            border-left: 5px solid #fd7e14 !important;
+        }
+        #dashboard .stats-grid .stat-card:nth-child(3)::before {
+            content: '' !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            height: 3px !important;
+            background: linear-gradient(90deg, #fd7e14, #ffc107) !important;
+        }
+        #dashboard .stats-grid .stat-card:nth-child(3) h3 {
+            color: #fd7e14 !important;
+        }
+
+        /* Card Conquistas - Roxo */
+        #dashboard .stats-grid .stat-card:nth-child(4) {
+            border-left: 5px solid #6f42c1 !important;
+        }
+        #dashboard .stats-grid .stat-card:nth-child(4)::before {
+            content: '' !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            height: 3px !important;
+            background: linear-gradient(90deg, #6f42c1, #e83e8c) !important;
+        }
+        #dashboard .stats-grid .stat-card:nth-child(4) h3 {
+            color: #6f42c1 !important;
+        }
+
+        #dashboard .stats-grid .stat-card h3 {
+            font-size: 1.2em !important;
+            margin-bottom: 10px !important;
+            font-weight: 600 !important;
+            text-align: center !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 8px !important;
+            line-height: 1.3 !important;
+        }
+
+        #dashboard .stats-grid .stat-card .stat-number {
+            font-size: 2.5em !important;
+            font-weight: bold !important;
+            color: #333 !important;
+            margin-bottom: 5px !important;
+            display: block !important;
+            line-height: 1 !important;
+        }
+
+        #dashboard .stats-grid .stat-card .stat-label {
+            color: #666 !important;
+            font-size: 0.9em !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            font-weight: 500 !important;
+            margin: 0 !important;
+        }
+
+        /* Hover effects com cores específicas */
+        #dashboard .stats-grid .stat-card:nth-child(1):hover {
+            transform: translateY(-5px) !important;
+            box-shadow: 0 8px 25px rgba(65, 105, 225, 0.2) !important;
+        }
+        #dashboard .stats-grid .stat-card:nth-child(2):hover {
+            transform: translateY(-5px) !important;
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.2) !important;
+        }
+        #dashboard .stats-grid .stat-card:nth-child(3):hover {
+            transform: translateY(-5px) !important;
+            box-shadow: 0 8px 25px rgba(253, 126, 20, 0.2) !important;
+        }
+        #dashboard .stats-grid .stat-card:nth-child(4):hover {
+            transform: translateY(-5px) !important;
+            box-shadow: 0 8px 25px rgba(111, 66, 193, 0.2) !important;
+        }
+
+        /* 🔧 CORREÇÃO URGENTE - Sugestões de Busca Reposições */
+        /* FORÇA sugestões aparecerem POR CIMA - Máxima Prioridade */
+        
+        /* CORREÇÃO PRINCIPAL: Permitir que sugestões excedam limites do modal */
+        #addReposicaoModal .modal-content {
+            overflow: visible !important;
+            overflow-y: visible !important;
+            overflow-x: visible !important;
+        }
+        
+        #addReposicaoModal .modal-body {
+            overflow: visible !important;
+            overflow-y: visible !important;
+            overflow-x: visible !important;
+        }
+        
+        #addReposicaoModal .form-group {
+            overflow: visible !important;
+            position: relative !important;
+        }
+        
+        .reposicao-students-search-container {
+            position: relative !important;
+            z-index: 999999 !important;
+            overflow: visible !important;
+        }
+        
+        .reposicao-students-search-container .students-suggestions,
+        #reposicaoStudentsSuggestions {
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 2147483647 !important;
+            background: white !important;
+            border: 2px solid #007bff !important;
+            border-top: none !important;
+            max-height: 200px !important;
+            overflow-y: auto !important;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important;
+            border-radius: 0 0 8px 8px !important;
+            display: none !important;
+        }
+        
+        .reposicao-students-search-container .students-suggestions.show,
+        #reposicaoStudentsSuggestions.show {
+            display: block !important;
+            z-index: 2147483647 !important;
+        }
+        
+        .students-suggestions .task-suggestion-item,
+        #reposicaoStudentsSuggestions .task-suggestion-item {
+            z-index: 2147483647 !important;
+            background: white !important;
+            position: relative !important;
+            padding: 12px 15px !important;
+            cursor: pointer !important;
+            border-bottom: 1px solid #f0f0f0 !important;
+        }
+        
+        .students-suggestions .task-suggestion-item:hover,
+        #reposicaoStudentsSuggestions .task-suggestion-item:hover {
+            background-color: #f8f9fa !important;
+            z-index: 2147483647 !important;
+        }
+        
+        /* Força elementos do modal ficarem atrás */
+        .modal-content { z-index: 1000 !important; }
+        .modal-body { z-index: 1001 !important; }
+        .form-group { z-index: 1002 !important; position: relative !important; }
+    </style>
+</head>
+<body>
+    <!-- ==================== TELA DE LOGIN ==================== -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-card">
+            <div class="login-logo">
+                <div class="logo">
+                    <div class="logo-horizontal">
+                        <div class="logo-text">
+                            <span class="logo-speak">speak</span><span class="logo-english">english</span>
+                        </div>
+                    <div class="flags-container">
+                        <img src="https://flagcdn.com/w40/gb.png" alt="Reino Unido" class="flag">
+                        <img src="https://flagcdn.com/w40/us.png" alt="Estados Unidos" class="flag">
+                        </div>
+                    </div>
+                </div>
+                <p class="motto">Speak with Confidence</p>
+            </div>
+            
+            <div class="login-tabs">
+                <button class="login-tab active" onclick="switchLoginTab('professor')">Professor</button>
+                <button class="login-tab" onclick="switchLoginTab('aluno')">Aluno</button>
+            </div>
+            
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label class="form-label">Usuário</label>
+                    <input type="text" id="loginUser" class="form-input" placeholder="Digite seu usuário" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Senha</label>
+                    <input type="password" id="loginPassword" class="form-input" placeholder="Digite sua senha" required>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </button>
+            </form>
+            
+            <div id="loginError" class="alert alert-danger" style="display: none;">
+                <i class="fas fa-exclamation-triangle alert-icon"></i>
+                <span>Usuário ou senha incorretos!</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== INTERFACE PRINCIPAL ==================== -->
+    <div id="mainInterface" class="container" style="display: none;">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">
+                        <div class="logo-horizontal">
+                            <div class="logo-text">
+                                <span class="logo-speak">speak</span><span class="logo-english">english</span>
+                            </div>
+                        <div class="flags-container">
+                            <img src="https://flagcdn.com/w40/gb.png" alt="Reino Unido" class="flag">
+                            <img src="https://flagcdn.com/w40/us.png" alt="Estados Unidos" class="flag">
+                        </div>
+                    </div>
+                        <h1 class="header-title">Sistema de Gestão e Gamificação de Alunos</h1>
+                        <p class="header-subtitle">Aulas Online • Particulares ou em Grupos</p>
+                        <div class="header-buttons">
+                            <button class="header-btn confidence-btn">
+                                <i class="fas fa-comments"></i> Speak with Confidence
+                            </button>
+                            <button class="header-btn professor-btn">
+                                <i class="fas fa-user"></i> Prof. Diego Balzanello
+                            </button>
+                </div>
+                </div>
+                    </div>
+                
+                <div class="header-actions">
+                    <button class="btn btn-danger" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navegação -->
+        <nav class="tabs">
+            <button class="tab active" onclick="showTab('dashboard')">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </button>
+            <button class="tab" onclick="showTab('students')">
+                <i class="fas fa-users"></i> Alunos
+            </button>
+            <button class="tab" onclick="showTab('attendance')">
+                <i class="fas fa-calendar-check"></i> Presença
+            </button>
+            <button class="tab" onclick="showTab('tasks')">
+                <i class="fas fa-tasks"></i> Tarefas
+            </button>
+            <button class="tab" onclick="showTab('achievements')">
+                <i class="fas fa-trophy"></i> Conquistas
+            </button>
+            <button class="tab" onclick="showTab('reposicoes')">
+                <i class="fas fa-clock"></i> Reposições
+            </button>
+            <button class="tab" onclick="showTab('gestao')">
+                <i class="fas fa-briefcase"></i> Gestão
+            </button>
+            <button class="tab" onclick="showTab('rankings')">
+                <i class="fas fa-medal"></i> Rankings
+            </button>
+            <button class="tab" onclick="showTab('config')">
+                <i class="fas fa-cog"></i> Configurações
+            </button>
+        </nav>
+
+        <!-- ==================== ABA DASHBOARD ==================== -->
+        <div id="dashboard" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3><i class="fas fa-users"></i> Total de Alunos</h3>
+                    <span class="stat-number" id="totalStudents">0</span>
+                    <span class="stat-label">Estudantes Ativos</span>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-calendar-check"></i> Presenças Hoje</h3>
+                    <span class="stat-number" id="attendanceToday">0</span>
+                    <span class="stat-label">Presentes Hoje</span>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-tasks"></i> Tarefas Ativas</h3>
+                    <span class="stat-number" id="activeTasks">0</span>
+                    <span class="stat-label">Em Andamento</span>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-trophy"></i> Conquistas</h3>
+                    <span class="stat-number" id="totalAchievements">0</span>
+                    <span class="stat-label">Desbloqueadas</span>
+                </div>
+            </div>
+
+            <div class="ranking-container">
+                <h2><i class="fas fa-medal"></i> Top 5 Alunos</h2>
+                <div class="ranking-list" id="topStudents">
+                    <!-- Top 5 será preenchido via JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== ABA ALUNOS ==================== -->
+        <div id="students" class="tab-content">
+            <div class="students-controls">
+                <button class="btn btn-success" onclick="showAddStudentModal()">
+                    <i class="fas fa-user-plus"></i> Adicionar Aluno
+                </button>
+                <div class="students-filter">
+                    <select id="levelFilter" class="form-select" onchange="filterStudents()">
+                        <option value="">Todos os Níveis</option>
+                        <option value="A1">A1</option>
+                        <option value="A2">A2</option>
+                        <option value="B1">B1</option>
+                        <option value="B2">B2</option>
+                        <option value="C1">C1</option>
+                        <option value="C2">C2</option>
+                    </select>
+                </div>
+            </div>
+            <div class="students-grid" id="studentsGrid">
+                <!-- Alunos serão preenchidos via JavaScript -->
+            </div>
+        </div>
+
+        <!-- ==================== ABA PRESENÇA ==================== -->
+        <div id="attendance" class="tab-content">
+            <div class="attendance-container">
+                <div class="date-selector">
+                    <label class="form-label">Data:</label>
+                    <input type="date" id="attendanceDate" class="form-input" onchange="loadAttendance()">
+                    <button class="btn btn-primary" onclick="saveAttendance()">
+                        <i class="fas fa-save"></i> Salvar Presenças
+                    </button>
+                </div>
+                
+                <div class="attendance-groups">
+                    <div class="attendance-group">
+                        <h3><i class="fas fa-calendar-check"></i> Alunos com Aula no Dia Selecionado</h3>
+                        <div class="attendance-list" id="studentsWithClass">
+                            <!-- Preenchido via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== ABA TAREFAS ==================== -->
+        <div id="tasks" class="tab-content">
+            <div class="tasks-controls">
+                <div class="student-search-tasks-section">
+                    <label class="form-label">Buscar Aluno:</label>
+                    <div class="tasks-student-search-container">
+                        <div class="search-input-wrapper">
+                            <input type="text" id="tasksStudentSearchInput" class="student-search-input" 
+                                   placeholder="Digite o nome do aluno..." 
+                                   oninput="searchStudentsForTasks(this.value)"
+                                   onfocus="showTasksStudentSuggestions()"
+                                   onblur="hideTasksStudentSuggestions()">
+                            <i class="fas fa-search search-icon"></i>
+                        </div>
+                        <div id="tasksStudentSuggestions" class="search-suggestions" style="display: none;">
+                            <!-- Sugestões aparecerão aqui -->
+                        </div>
+                        <div id="tasksSelectedStudent" class="selected-student-display" style="display: none;">
+                            <!-- Aluno selecionado aparecerá aqui -->
+                        </div>
+                    </div>
+                </div>
+                <div class="task-buttons">
+            <button class="btn btn-success" onclick="showAddTaskModal()">
+                <i class="fas fa-plus"></i> Nova Tarefa
+            </button>
+                    <button class="btn btn-info" onclick="showAddBookTaskModal()">
+                        <i class="fas fa-book-open"></i> Nova Tarefa do Livro
+                    </button>
+            </div>
+        </div>
+
+            <div id="tasksContent" class="tasks-content">
+                <div class="no-student-selected">
+                    <i class="fas fa-search"></i>
+                    <h3>Busque um Aluno</h3>
+                    <p>Digite o nome de um aluno na busca acima para visualizar suas tarefas.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== ABA CONQUISTAS ==================== -->
+        <div id="achievements" class="tab-content">
+            <div class="achievements-controls">
+            <button class="btn btn-success" onclick="showAddAchievementModal()">
+                <i class="fas fa-plus"></i> Nova Conquista
+            </button>
+                <button class="btn btn-info" onclick="manualCheckAllAchievements()">
+                    <i class="fas fa-sync"></i> Verificar Todas as Conquistas
+                </button>
+            </div>
+            <div id="achievementsContainer">
+                <!-- Conquistas serão preenchidas via JavaScript -->
+            </div>
+        </div>
+
+        <!-- ==================== ABA REPOSIÇÕES ==================== -->
+        <div id="reposicoes" class="tab-content">
+            <div class="reposicoes-controls">
+                <div class="student-filter-section">
+                    <label class="form-label">Filtrar por Aluno:</label>
+                    <!-- Sistema de Busca Inteligente para Filtros -->
+                    <div class="reposicoes-filter-search-container">
+                        <div class="search-input-group">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="reposicoesStudentFilter" class="search-input" 
+                                   placeholder="Digite o nome do aluno para filtrar..." 
+                                   autocomplete="off"
+                                   oninput="searchStudentsForFilter(this.value)">
+                        </div>
+                        <div id="reposicoesFilterSuggestions" class="students-suggestions"></div>
+                        
+                        <!-- Exibir aluno selecionado -->
+                        <div class="selected-filter-student" id="selectedFilterStudent" style="display: none;">
+                            <div class="filter-student-info">
+                                <span class="filter-student-name"></span>
+                                <button type="button" class="btn-clear-filter" onclick="
+                                    console.log('🔲 Botão limpar clicado');
+                                    try {
+                                        if (typeof clearStudentFilter === 'function') {
+                                            clearStudentFilter();
+                                        } else if (typeof window.clearStudentFilter === 'function') {
+                                            window.clearStudentFilter();
+                                        } else {
+                                            console.warn('⚠️ clearStudentFilter não encontrada, executando fallback');
+                                            // Fallback inline COMPLETO
+                                            const inputField = document.getElementById('reposicoesStudentFilter');
+                                            const displayDiv = document.getElementById('selectedFilterStudent');
+                                            const nameSpan = document.querySelector('.filter-student-name');
+                                            
+                                            if (inputField) inputField.value = '';
+                                            if (displayDiv) {
+                                                displayDiv.style.display = 'none';
+                                                displayDiv.style.visibility = 'hidden';
+                                            }
+                                            if (nameSpan) {
+                                                nameSpan.textContent = '';
+                                                nameSpan.innerHTML = '';
+                                            }
+                                            
+                                            // Força limpeza de todos os spans internos
+                                            if (displayDiv) {
+                                                const allSpans = displayDiv.querySelectorAll('span');
+                                                allSpans.forEach(span => {
+                                                    span.textContent = '';
+                                                    span.innerHTML = '';
+                                                });
+                                            }
+                                            
+                                            if (typeof filterReposicoesByStudent === 'function') {
+                                                filterReposicoesByStudent('');
+                                            }
+                                            console.log('✅ Fallback COMPLETO executado');
+                                        }
+                                    } catch (error) {
+                                        console.error('❌ Erro ao limpar filtro:', error);
+                                    }
+                                ">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="reposicao-buttons">
+                <button class="btn btn-success" onclick="showAddReposicaoModal()">
+                    <i class="fas fa-plus"></i> Nova Reposição
+                </button>
+                </div>
+            </div>
+            
+            <div class="reposicoes-sections">
+                <div class="reposicao-section">
+                    <h3><i class="fas fa-clock"></i> Próximas Reposições</h3>
+                    <div id="proximasReposicoes">
+                        <!-- Preenchido via JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="reposicao-section">
+                    <h3><i class="fas fa-check-circle"></i> Reposições Realizadas</h3>
+                    <div id="reposicoesRealizadas">
+                        <!-- Preenchido via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== ABA GESTÃO EMPRESARIAL ==================== -->
+        <div id="gestao" class="tab-content">
+            <div class="gestao-modules">
+                <div class="module-card" onclick="showGestaoModule('contratos')">
+                    <div class="module-icon"></div>
+                    <div class="module-title">Contratos</div>
+                    <div class="module-description">Gestão de contratos e documentos</div>
+                </div>
+                <div class="module-card" onclick="showGestaoModule('financeiro')">
+                    <div class="module-icon"></div>
+                    <div class="module-title">Financeiro</div>
+                    <div class="module-description">Controle de pagamentos e mensalidades</div>
+                </div>
+                <div class="module-card" onclick="showGestaoModule('aulas')">
+                    <div class="module-icon"></div>
+                    <div class="module-title">Controle de Aulas</div>
+                    <div class="module-description">Aulas dadas e planejamento</div>
+                </div>
+                <div class="module-card" onclick="showGestaoModule('relatorios')">
+                    <div class="module-icon"></div>
+                    <div class="module-title">Relatórios</div>
+                    <div class="module-description">Relatórios de desempenho</div>
+                </div>
+            </div>
+
+            <div id="gestaoContent" class="gestao-content">
+                <p class="text-center text-muted">Selecione um módulo acima para começar</p>
+            </div>
+        </div>
+
+        <!-- ==================== ABA RANKINGS ==================== -->
+        <div id="rankings" class="tab-content">
+            <div class="ranking-container">
+                <div class="ranking-controls">
+                    <button class="ranking-period active" data-period="geral">Geral</button>
+                    <button class="ranking-period" data-period="mensal">Mensal</button>
+                    <button class="ranking-period" data-period="trimestral">Trimestral</button>
+                    <button class="ranking-period" data-period="anual">Anual</button>
+                </div>
+                
+                <div class="ranking-header" id="rankingHeader">
+                    <h2> Ranking Geral</h2>
+                    <p>Classificação baseada na pontuação total dos alunos</p>
+                </div>
+                
+                <div class="ranking-list" id="rankingList">
+                    <!-- Ranking será preenchido via JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== ABA CONFIGURAÇÕES ==================== -->
+        <div id="config" class="tab-content">
+            <!-- Informações do Sistema -->
+            <div class="config-section">
+                <h3><i class="fas fa-info-circle"></i> Informações do Sistema</h3>
+                <div class="config-grid">
+                    <div class="config-item">
+                        <span class="config-label">Escola:</span>
+                        <span class="config-value">SpeakEnglish</span>
+                    </div>
+                    <div class="config-item">
+                        <span class="config-label">Professor:</span>
+                        <span class="config-value">Diego Balzanello</span>
+                    </div>
+                    <div class="config-item">
+                        <span class="config-label">Versão:</span>
+                        <span class="config-value">3.1.1 - Sistema Busca Inteligente</span>
+                    </div>
+                    <div class="config-item">
+                        <span class="config-label">Total de Alunos:</span>
+                        <span class="config-value" id="configTotalStudents">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Novidades da Versão -->
+            <div class="config-section">
+                <h3><i class="fas fa-sparkles"></i> Novidades da Versão 3.0.0</h3>
+                <div class="config-updates">
+                    <div class="update-item">
+                        <i class="fas fa-filter update-icon"></i>
+                        <div class="update-content">
+                            <strong>Sistema de Filtros por Status</strong>
+                            <span>Filtros inteligentes: Todas, Concluídas, Pendentes, Atrasadas com contadores dinâmicos</span>
+                        </div>
+                    </div>
+                    <div class="update-item">
+                        <i class="fas fa-calendar-alt update-icon"></i>
+                        <div class="update-content">
+                            <strong>Filtros por Mês com Padrão Atual</strong>
+                            <span>Sistema foca automaticamente no mês atual com indicador visual especial 🔥</span>
+                        </div>
+                    </div>
+                    <div class="update-item">
+                        <i class="fas fa-link update-icon"></i>
+                        <div class="update-content">
+                            <strong>Filtros Combinados Inteligentes</strong>
+                            <span>Combine filtros de status e mês para análises precisas com indicadores visuais</span>
+                        </div>
+                    </div>
+                    <div class="update-item">
+                        <i class="fas fa-paint-brush update-icon"></i>
+                        <div class="update-content">
+                            <strong>Interface Moderna e Responsiva</strong>
+                            <span>Design completamente renovado com animações suaves e gradientes profissionais</span>
+                        </div>
+                    </div>
+                    <div class="update-item">
+                        <i class="fas fa-tools update-icon"></i>
+                        <div class="update-content">
+                            <strong>Ferramentas de Debug Completas</strong>
+                            <span>Sistema robusto de debug e verificação para desenvolvedores e usuários avançados</span>
+                        </div>
+                    </div>
+                    <div class="update-item">
+                        <i class="fas fa-rocket update-icon"></i>
+                        <div class="update-content">
+                            <strong>Performance Otimizada</strong>
+                            <span>Atualizações seletivas, cache inteligente e rendering lazy para máxima velocidade</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sistema de Pontuação -->
+            <div class="config-section">
+                <h3><i class="fas fa-star"></i> Sistema de Pontuação</h3>
+                <p class="text-muted mb-20">Configure os valores de pontuação para cada atividade</p>
+                
+                <table class="points-table">
+                    <thead>
+                        <tr>
+                            <th>Atividade</th>
+                            <th>Pontos</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Presença</td>
+                            <td><span id="pointsPresenca">5</span> pontos</td>
+                            <td><button class="btn btn-small edit-points-btn" onclick="editPoints('presenca')">Editar</button></td>
+                        </tr>
+                        <tr>
+                            <td>Tarefa Geral</td>
+                            <td><span id="pointsTarefa">10</span> pontos</td>
+                            <td><button class="btn btn-small edit-points-btn" onclick="editPoints('tarefa')">Editar</button></td>
+                        </tr>
+                        <tr>
+                            <td>Bônus Sequência</td>
+                            <td><span id="pointsSequencia">2</span> pontos</td>
+                            <td><button class="btn btn-small edit-points-btn" onclick="editPoints('sequencia')">Editar</button></td>
+                        </tr>
+                        <tr>
+                            <td>Pontos Bônus</td>
+                            <td><span id="pointsBonus">5</span> pontos</td>
+                            <td><button class="btn btn-small edit-points-btn" onclick="editPoints('bonus')">Editar</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Sistema de Níveis -->
+            <div class="config-section">
+                <h3><i class="fas fa-layer-group"></i> Sistema de Níveis</h3>
+                <p class="text-muted mb-20">Configure os pontos necessários para cada nível</p>
+                
+                <table class="points-table">
+                    <thead>
+                        <tr>
+                            <th>Nível</th>
+                            <th>Pontos Necessários</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="levelsTable">
+                        <!-- Preenchido via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Gestão de Senhas -->
+            <div class="config-section">
+                <h3><i class="fas fa-key"></i> Gestão de Senhas</h3>
+                <button class="btn btn-warning" onclick="showChangePasswordModal()">
+                    <i class="fas fa-edit"></i> Alterar Senha do Professor
+                </button>
+                <button class="btn btn-info" onclick="showStudentPasswordsModal()">
+                    <i class="fas fa-users"></i> Gerenciar Senhas dos Alunos
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAIS ==================== -->
+    
+    <!-- Modal Adicionar Aluno -->
+    <div id="addStudentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-plus"></i> Adicionar Novo Aluno</h3>
+                <button class="close" onclick="closeModal('addStudentModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addStudentForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Nome Completo *</label>
+                            <input type="text" id="studentName" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email *</label>
+                            <input type="email" id="studentEmail" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Senha de Acesso *</label>
+                            <div class="password-input-group">
+                                <input type="text" id="studentPassword" class="form-input" required placeholder="Digite a senha ou gere automaticamente">
+                                <button type="button" class="btn btn-secondary btn-small" onclick="generateStudentPassword()" title="Gerar senha automática">
+                                    <i class="fas fa-random"></i>
+                                </button>
+                            </div>
+                            <small class="text-muted">Esta senha será usada pelo aluno para fazer login no sistema</small>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Nível de Inglês *</label>
+                            <select id="studentLevel" class="form-select" required>
+                                <option value="">Selecione o nível</option>
+                                <option value="A1">A1</option>
+                                <option value="A2">A2</option>
+                                <option value="B1">B1</option>
+                                <option value="B2">B2</option>
+                                <option value="C1">C1</option>
+                                <option value="C2">C2</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Horário das Aulas</label>
+                            <input type="time" id="studentTime" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <!-- Espaço para alinhamento -->
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Dias da Semana *</label>
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="day-monday" value="Segunda">
+                            <label for="day-monday">Segunda-feira</label>
+                        </div>
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="day-tuesday" value="Terça">
+                            <label for="day-tuesday">Terça-feira</label>
+                        </div>
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="day-wednesday" value="Quarta">
+                            <label for="day-wednesday">Quarta-feira</label>
+                        </div>
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="day-thursday" value="Quinta">
+                            <label for="day-thursday">Quinta-feira</label>
+                        </div>
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="day-friday" value="Sexta">
+                            <label for="day-friday">Sexta-feira</label>
+                        </div>
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="day-saturday" value="Sábado">
+                            <label for="day-saturday">Sábado</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addStudentModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="addStudent()">
+                    <i class="fas fa-user-plus"></i> Adicionar Aluno
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Aluno -->
+    <div id="editStudentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-edit"></i> Editar Aluno</h3>
+                <button class="close" onclick="closeModal('editStudentModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editStudentForm">
+                    <input type="hidden" id="editStudentIndex">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Nome Completo *</label>
+                            <input type="text" id="editStudentName" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email *</label>
+                            <input type="email" id="editStudentEmail" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Senha de Acesso *</label>
+                            <div class="password-input-group">
+                                <input type="text" id="editStudentPassword" class="form-input" required placeholder="Digite a senha ou gere automaticamente">
+                                <button type="button" class="btn btn-secondary btn-small" onclick="generateEditStudentPassword()" title="Gerar nova senha">
+                                    <i class="fas fa-random"></i>
+                                </button>
+                            </div>
+                            <small class="text-muted">Esta senha será usada pelo aluno para fazer login no sistema</small>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Nível de Inglês *</label>
+                            <select id="editStudentLevel" class="form-select" required>
+                                <option value="">Selecione o nível</option>
+                                <option value="A1">A1</option>
+                                <option value="A2">A2</option>
+                                <option value="B1">B1</option>
+                                <option value="B2">B2</option>
+                                <option value="C1">C1</option>
+                                <option value="C2">C2</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Horário das Aulas</label>
+                            <input type="time" id="editStudentTime" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <!-- Espaço para alinhamento -->
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Dias da Semana *</label>
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="edit-day-monday" value="Segunda">
+                            <label for="edit-day-monday">Segunda-feira</label>
+                        </div>
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="edit-day-tuesday" value="Terça">
+                            <label for="edit-day-tuesday">Terça-feira</label>
+                        </div>
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="edit-day-wednesday" value="Quarta">
+                            <label for="edit-day-wednesday">Quarta-feira</label>
+                        </div>
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="edit-day-thursday" value="Quinta">
+                            <label for="edit-day-thursday">Quinta-feira</label>
+                        </div>
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="edit-day-friday" value="Sexta">
+                            <label for="edit-day-friday">Sexta-feira</label>
+                        </div>
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="edit-day-saturday" value="Sábado">
+                            <label for="edit-day-saturday">Sábado</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('editStudentModal')">Cancelar</button>
+                <button class="btn btn-warning" onclick="updateStudent()">
+                    <i class="fas fa-save"></i> Salvar Alterações
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Adicionar Tarefa -->
+    <div id="addTaskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus"></i> Nova Tarefa</h3>
+                <button class="close" onclick="closeModal('addTaskModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addTaskForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Título da Tarefa *</label>
+                            <input type="text" id="taskTitle" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Link para a tarefa</label>
+                            <input type="url" id="taskClassroomLink" class="form-input" placeholder="https://...">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descrição</label>
+                        <textarea id="taskDescription" class="form-textarea" rows="3"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Pontos *</label>
+                            <input type="number" id="taskPoints" class="form-input" min="1" value="10" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Data de Entrega</label>
+                            <input type="date" id="taskDueDate" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Selecionar Alunos *</label>
+                        <div class="task-students-search-container">
+                            <div class="task-students-search-input-wrapper">
+                                <input type="text" id="taskStudentsSearch" class="form-input" placeholder="Digite o nome do aluno...">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div id="taskStudentsSuggestions" class="task-students-suggestions"></div>
+                            <div id="taskSelectedStudents" class="task-selected-students">
+                                <p class="task-no-students">Nenhum aluno selecionado</p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addTaskModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="addTask()">
+                    <i class="fas fa-plus"></i> Criar Tarefa
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Adicionar Tarefa do Livro -->
+    <div id="addBookTaskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-book-open"></i> Nova Tarefa do Livro</h3>
+                <button class="close" onclick="closeModal('addBookTaskModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addBookTaskForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Nome do Livro *</label>
+                            <input type="text" id="bookName" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Página *</label>
+                            <input type="text" id="bookPage" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Exercícios *</label>
+                            <input type="text" id="bookExercises" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Pontos *</label>
+                            <input type="number" id="bookTaskPoints" class="form-input" min="1" value="10" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descrição Adicional</label>
+                        <textarea id="bookTaskDescription" class="form-textarea" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Data de Entrega</label>
+                        <input type="date" id="bookTaskDueDate" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Selecionar Alunos *</label>
+                        <div class="book-task-students-search-container">
+                            <div class="book-task-students-search-input-wrapper">
+                                <input type="text" id="bookTaskStudentsSearch" class="form-input" placeholder="Digite o nome do aluno...">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div id="bookTaskStudentsSuggestions" class="book-task-students-suggestions"></div>
+                            <div id="bookTaskSelectedStudents" class="book-task-selected-students">
+                                <p class="book-task-no-students">Nenhum aluno selecionado</p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addBookTaskModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="addBookTask()">
+                    <i class="fas fa-book-open"></i> Criar Tarefa do Livro
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Adicionar Conquista -->
+    <div id="addAchievementModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-trophy"></i> Nova Conquista</h3>
+                <button class="close" onclick="closeModal('addAchievementModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addAchievementForm">
+                    <div class="form-group">
+                        <label class="form-label">Nome da Conquista *</label>
+                        <input type="text" id="achievementName" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descrição</label>
+                        <textarea id="achievementDescription" class="form-textarea" rows="3"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Ícone</label>
+                            <input type="text" id="achievementIcon" class="form-input" value="" placeholder="fas fa-trophy">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Pontos Bônus</label>
+                            <input type="number" id="achievementPoints" class="form-input" min="0" value="20">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Condição *</label>
+                            <select id="achievementCondition" class="form-select" required>
+                                <option value="attendance">Presenças</option>
+                                <option value="tasks">Tarefas Gerais</option>
+                                <option value="bookTasks">Tarefas do Livro</option>
+                                <option value="points">Pontos Totais</option>
+                                <option value="streak">Sequência de Presença</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Meta *</label>
+                            <input type="number" id="achievementTarget" class="form-input" min="1" value="1" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="achievementAutoCheck" checked>
+                            <label for="achievementAutoCheck">Verificação Automática</label>
+                        </div>
+                        <small class="text-muted">Se marcado, a conquista será concedida automaticamente quando o aluno atingir a meta</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addAchievementModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="addAchievement()">
+                    <i class="fas fa-plus"></i> Criar Conquista
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Conquista -->
+    <div id="editAchievementModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-trophy"></i> Editar Conquista</h3>
+                <button class="close" onclick="closeModal('editAchievementModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editAchievementForm">
+                    <input type="hidden" id="editAchievementIndex">
+                    <div class="form-group">
+                        <label class="form-label">Nome da Conquista *</label>
+                        <input type="text" id="editAchievementName" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descrição</label>
+                        <textarea id="editAchievementDescription" class="form-textarea" rows="3"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Ícone</label>
+                            <input type="text" id="editAchievementIcon" class="form-input" value="" placeholder="fas fa-trophy">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Pontos Bônus</label>
+                            <input type="number" id="editAchievementPoints" class="form-input" min="0" value="20">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Condição *</label>
+                            <select id="editAchievementCondition" class="form-select" required>
+                                <option value="attendance">Presenças</option>
+                                <option value="tasks">Tarefas Gerais</option>
+                                <option value="bookTasks">Tarefas do Livro</option>
+                                <option value="points">Pontos Totais</option>
+                                <option value="streak">Sequência de Presença</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Meta *</label>
+                            <input type="number" id="editAchievementTarget" class="form-input" min="1" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="editAchievementAutoCheck" checked>
+                            <label for="editAchievementAutoCheck">Verificação Automática</label>
+                        </div>
+                        <small class="text-muted">Se marcado, a conquista será concedida automaticamente quando o aluno atingir a meta</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('editAchievementModal')">Cancelar</button>
+                <button class="btn btn-warning" onclick="updateAchievement()">
+                    <i class="fas fa-save"></i> Salvar Alterações
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Adicionar Reposição -->
+    <div id="addReposicaoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-clock"></i> Nova Reposição</h3>
+                <button class="close" onclick="closeModal('addReposicaoModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addReposicaoForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Alunos *</label>
+                            <div class="reposicao-students-search-container">
+                                <div class="search-input-group">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" id="reposicaoStudentsSearch" class="search-input" 
+                                           placeholder="Digite o nome do aluno..." 
+                                           autocomplete="off">
+                                </div>
+                                <div id="reposicaoStudentsSuggestions" class="students-suggestions"></div>
+                                
+                                <!-- Lista de alunos selecionados -->
+                                <div class="selected-students-section">
+                                    <div class="selected-students-header">
+                                        <span class="selected-count">Alunos selecionados: <span id="reposicaoSelectedCount">0</span></span>
+                                        <button type="button" class="btn-clear-all" onclick="clearAllReposicaoStudents()" style="display: none;">
+                                            <i class="fas fa-times"></i> Limpar todos
+                                        </button>
+                                    </div>
+                                    <div id="reposicaoSelectedStudents" class="selected-students-list">
+                                        <!-- Alunos selecionados serão exibidos aqui -->
+                                    </div>
+                                </div>
+                                
+                                <!-- Campo hidden para armazenar os emails dos alunos selecionados -->
+                                <input type="hidden" id="reposicaoStudentsEmails" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Motivo *</label>
+                            <input type="text" id="reposicaoMotivo" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Data da Aula Original *</label>
+                            <input type="date" id="reposicaoDataOriginal" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Data da Reposição *</label>
+                            <input type="date" id="reposicaoDataReposicao" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Horário da Reposição</label>
+                            <input type="time" id="reposicaoHorario" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status</label>
+                            <select id="reposicaoStatus" class="form-select">
+                                <option value="agendada">Agendada</option>
+                                <option value="realizada">Realizada</option>
+                                <option value="cancelada">Cancelada</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Observações</label>
+                        <textarea id="reposicaoObservacoes" class="form-textarea" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addReposicaoModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="addReposicao()">
+                    <i class="fas fa-clock"></i> Criar Reposição
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Adicionar Contrato -->
+    <div id="addContratoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-file-contract"></i> Novo Contrato</h3>
+                <button class="close" onclick="closeModal('addContratoModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addContratoForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Aluno *</label>
+                            <select id="contratoStudent" class="form-select" required>
+                                <option value="">Selecione o aluno</option>
+                                <!-- Preenchido via JavaScript -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tipo de Contrato *</label>
+                            <select id="contratoTipo" class="form-select" required>
+                                <option value="">Selecione o tipo</option>
+                                <option value="mensal">Mensal</option>
+                                <option value="trimestral">Trimestral</option>
+                                <option value="semestral">Semestral</option>
+                                <option value="anual">Anual</option>
+                                <option value="avulso">Aula Avulsa</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Valor (R$) *</label>
+                            <input type="number" id="contratoValor" class="form-input" required min="0" step="0.01" placeholder="0,00">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Dia de Vencimento</label>
+                            <select id="contratoVencimento" class="form-select">
+                                <option value="">Selecione o dia</option>
+                                <option value="5">Dia 5</option>
+                                <option value="10">Dia 10</option>
+                                <option value="15">Dia 15</option>
+                                <option value="20">Dia 20</option>
+                                <option value="25">Dia 25</option>
+                                <option value="30">Dia 30</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Data de Início *</label>
+                            <input type="date" id="contratoDataInicio" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Data de Término *</label>
+                            <input type="date" id="contratoDataTermino" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Aulas por Semana</label>
+                        <select id="contratoAulasSemana" class="form-select">
+                            <option value="1">1 aula</option>
+                            <option value="2" selected>2 aulas</option>
+                            <option value="3">3 aulas</option>
+                            <option value="4">4 aulas</option>
+                            <option value="5">5 aulas</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Observações</label>
+                        <textarea id="contratoObservacoes" class="form-textarea" rows="3" placeholder="Observações adicionais do contrato..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Arquivo do Contrato</label>
+                        <div class="file-upload-area">
+                            <input type="file" id="contratoFile" class="file-input" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple>
+                            <div class="file-upload-content">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Clique aqui ou arraste arquivos para fazer upload</p>
+                                <small>Formatos aceitos: PDF, DOC, DOCX, JPG, PNG (máx. 10MB)</small>
+                            </div>
+                            <div id="selectedFiles" class="selected-files"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addContratoModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="addContrato()">
+                    <i class="fas fa-file-contract"></i> Criar Contrato
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Contrato -->
+    <div id="editContratoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Editar Contrato</h3>
+                <button class="close" onclick="closeModal('editContratoModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editContratoForm">
+                    <input type="hidden" id="editContratoIndex">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Aluno *</label>
+                            <select id="editContratoStudent" class="form-select" required>
+                                <option value="">Selecione o aluno</option>
+                                <!-- Preenchido via JavaScript -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tipo de Contrato *</label>
+                            <select id="editContratoTipo" class="form-select" required>
+                                <option value="">Selecione o tipo</option>
+                                <option value="mensal">Mensal</option>
+                                <option value="trimestral">Trimestral</option>
+                                <option value="semestral">Semestral</option>
+                                <option value="anual">Anual</option>
+                                <option value="avulso">Aula Avulsa</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Valor (R$) *</label>
+                            <input type="number" id="editContratoValor" class="form-input" required min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Dia de Vencimento</label>
+                            <select id="editContratoVencimento" class="form-select">
+                                <option value="">Selecione o dia</option>
+                                <option value="5">Dia 5</option>
+                                <option value="10">Dia 10</option>
+                                <option value="15">Dia 15</option>
+                                <option value="20">Dia 20</option>
+                                <option value="25">Dia 25</option>
+                                <option value="30">Dia 30</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Data de Início *</label>
+                            <input type="date" id="editContratoDataInicio" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Data de Término *</label>
+                            <input type="date" id="editContratoDataTermino" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Aulas por Semana</label>
+                        <select id="editContratoAulasSemana" class="form-select">
+                            <option value="1">1 aula</option>
+                            <option value="2">2 aulas</option>
+                            <option value="3">3 aulas</option>
+                            <option value="4">4 aulas</option>
+                            <option value="5">5 aulas</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select id="editContratoStatus" class="form-select">
+                            <option value="ativo">Ativo</option>
+                            <option value="suspenso">Suspenso</option>
+                            <option value="cancelado">Cancelado</option>
+                            <option value="finalizado">Finalizado</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Observações</label>
+                        <textarea id="editContratoObservacoes" class="form-textarea" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Arquivos do Contrato</label>
+                        <div id="existingFiles" class="existing-files">
+                            <!-- Arquivos existentes serão listados aqui -->
+                        </div>
+                        <div class="file-upload-area">
+                            <input type="file" id="editContratoFile" class="file-input" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple>
+                            <div class="file-upload-content">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Adicionar novos arquivos</p>
+                                <small>Formatos aceitos: PDF, DOC, DOCX, JPG, PNG (máx. 10MB)</small>
+                            </div>
+                            <div id="editSelectedFiles" class="selected-files"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('editContratoModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="updateContrato()">
+                    <i class="fas fa-save"></i> Salvar Alterações
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Adicionar Pagamento -->
+    <div id="addPagamentoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-dollar-sign"></i> Registrar Pagamento</h3>
+                <button class="close" onclick="closeModal('addPagamentoModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addPagamentoForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Aluno *</label>
+                            <select id="pagamentoAluno" class="form-select" required onchange="loadContratoInfo()">
+                                <option value="">Selecione o aluno</option>
+                                <!-- Preenchido via JavaScript -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Mês de Referência *</label>
+                            <input type="month" id="pagamentoReferencia" class="form-input" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Card de informações do contrato -->
+                    <div id="contratoInfo" class="contrato-info-card" style="display: none;">
+                        <div class="info-card-header">
+                            <h4><i class="fas fa-file-contract"></i> Informações do Contrato</h4>
+                        </div>
+                        <div class="info-card-body">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Valor Mensal:</span>
+                                    <span id="contratoValorInfo" class="info-value">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Dia Vencimento:</span>
+                                    <span id="contratoVencimentoInfo" class="info-value">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Aulas/Mês:</span>
+                                    <span id="contratoAulasInfo" class="info-value">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Status:</span>
+                                    <span id="contratoStatusInfo" class="info-value">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Data do Pagamento *</label>
+                            <input type="date" id="pagamentoData" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Data de Vencimento *</label>
+                            <input type="date" id="pagamentoVencimento" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Valor Pago (R$) *</label>
+                            <input type="number" id="pagamentoValor" class="form-input" required min="0" step="0.01" placeholder="0,00">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Forma de Pagamento *</label>
+                            <select id="pagamentoForma" class="form-select" required>
+                                <option value="">Selecione a forma</option>
+                                <option value="pix">PIX</option>
+                                <option value="dinheiro">Dinheiro</option>
+                                <option value="transferencia">Transferência</option>
+                                <option value="cartao">Cartão</option>
+                                <option value="cheque">Cheque</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Observações</label>
+                        <textarea id="pagamentoObservacoes" class="form-textarea" rows="3" placeholder="Informações adicionais sobre o pagamento..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addPagamentoModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="addPagamento()">
+                    <i class="fas fa-dollar-sign"></i> Registrar Pagamento
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Pagamento -->
+    <div id="editPagamentoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Editar Pagamento</h3>
+                <button class="close" onclick="closeModal('editPagamentoModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editPagamentoForm">
+                    <input type="hidden" id="editPagamentoId">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Aluno</label>
+                            <input type="text" id="editPagamentoAluno" class="form-input" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Mês de Referência *</label>
+                            <input type="month" id="editPagamentoReferencia" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Data do Pagamento *</label>
+                            <input type="date" id="editPagamentoData" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Data de Vencimento *</label>
+                            <input type="date" id="editPagamentoVencimento" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Valor Pago (R$) *</label>
+                            <input type="number" id="editPagamentoValor" class="form-input" required min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Forma de Pagamento *</label>
+                            <select id="editPagamentoForma" class="form-select" required>
+                                <option value="pix">PIX</option>
+                                <option value="dinheiro">Dinheiro</option>
+                                <option value="transferencia">Transferência</option>
+                                <option value="cartao">Cartão</option>
+                                <option value="cheque">Cheque</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Observações</label>
+                        <textarea id="editPagamentoObservacoes" class="form-textarea" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('editPagamentoModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="updatePagamento()">
+                    <i class="fas fa-save"></i> Salvar Alterações
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Visualização de Arquivos -->
+    <div id="fileViewer" class="file-viewer">
+        <div class="file-viewer-content">
+            <div class="file-viewer-header">
+                <h3 id="fileViewerTitle">Visualizar Arquivo</h3>
+                <button class="btn btn-secondary" onclick="closeFileViewer()">
+                    <i class="fas fa-times"></i> Fechar
+                </button>
+            </div>
+            <div class="file-viewer-body" id="fileViewerBody">
+                <!-- Conteúdo do arquivo será carregado aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+    <script src="anti-piscar.js"></script>
+    
+    <!-- MODO SILENCIOSO - DEVE SER O PRIMEIRO -->
+    <script src="silent-mode.js"></script>
+    
+    <script src="aulas-system.js"></script>
+    <script src="mensalidades-fix.js"></script>
+    <script src="extra-functions.js"></script>
+    <script src="financial-fixes.js"></script>
+    <script src="financial-stats.js"></script>
+    <script src="reports-module.js"></script>
+    <script src="reports-search-system.js"></script>
+    <script src="reports-autocorrect.js"></script>
+    <script src="stop-refresh-interference.js"></script>
+    <script src="reports-stable.js"></script>
+    <script src="fix-botao-filtro.js"></script>
+    <script src="contracts-search-enhancements.js"></script>
+    <script src="debug-student-reports.js"></script>
+    <script src="reports-test.js"></script>
+    <script src="reports-fix.js"></script>
+    <script src="create-test-students.js"></script>
+    <script src="fix-login-credentials.js"></script>
+    <script src="fix-login-screen-hide.js"></script>
+    <script src="emergency-hide-login.js"></script>
+    <script src="fix-student-login-final.js"></script>
+    <script src="interface-killer-light.js"></script>
+    <script src="persistent-professor-interface.js"></script>
+    <script src="force-student-tabs-styles.js"></script>
+    <script src="color-fix.js"></script>
+    <script src="clean-debug.js"></script>
+    <script src="fix-activity-layout.js"></script>
+    <script src="fix-tab-navigation.js"></script>
+    <script src="complete-student-tabs.js"></script>
+</body>
+</html>
